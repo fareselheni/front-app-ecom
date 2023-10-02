@@ -20,6 +20,8 @@ const coreRoutes = [
     path: '/AdminPanel',
     title: 'AdminPanel',
     component: AdminPanel,
+    isAuthentificate:true
+
   },
   {
     path: '/ProductList',

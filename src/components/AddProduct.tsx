@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Select from './Select';
+import { toast } from 'react-toastify';
 
 // Define the Product interface
 interface Product {
@@ -73,6 +74,9 @@ const AddProduct = ({ updateProductList, products }: AddProductProps) => {
         description: '',
         image: null,
       });
+      toast.success(`Product Added`, {
+        theme: 'colored'
+      });
 
       if (updateProductList) {
         await updateProductList();
@@ -101,6 +105,9 @@ const AddProduct = ({ updateProductList, products }: AddProductProps) => {
       });
 
       console.log('Pricing added successfully', response.data);
+      toast.success(`Pricing added successfully`, {
+        theme: 'colored'
+      });
 
       // Reset the form
       setSelectedProduct('');

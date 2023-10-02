@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { toast } from 'react-toastify';
 
 interface ModalFormProps {
   isVisible: Boolean;
@@ -57,8 +58,10 @@ const ModalForm = ({ isVisible, onClose, product,updateProductList }: ModalFormP
       );
 
       // Handle the response as needed, e.g., show a success message
-      console.log('Product added successfully', response.data);
-
+      console.log('Product updated successfully', response.data);
+      toast.success(`Product updated successfully`, {
+        theme: 'colored'
+      });
       // Reset the form by setting formData to empty values
       setFormData({
         title: '',

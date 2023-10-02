@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { token } from '../App';
 import Logo from '../images/logo/logo.svg';
 import SidebarLinkGroup from './SidebarLinkGroup';
 
@@ -9,7 +10,7 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
-  const [isAdminPanelVisible, setIsAdminPanelVisible] = useState(false);
+  // const [isAdminPanelVisible, setIsAdminPanelVisible] = useState(false);
   const location = useLocation();
   const { pathname } = location;
 
@@ -21,15 +22,22 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true',
   );
   // Helper function to check if a token exists in local storage
-  const isTokenValid = () => {
-    const token = localStorage.getItem('token');
-    return !!token;
-  };
 
-  useEffect(() => {
-    // Update the state when the token changes
-    setIsAdminPanelVisible(isTokenValid());
-  }, [isAdminPanelVisible]);
+   // Initialize a state variable to track whether the user is authenticated
+   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+
+   // Helper function to update the isAuthenticated state
+   const checkAuthentication = () => {
+     setIsAuthenticated(!!localStorage.getItem('token'));
+   };
+ 
+   useEffect(() => {
+     // Check for authentication status when the component mounts
+     checkAuthentication();
+   }, [isAuthenticated]);
+ 
+   // Listen for changes to localStorage (e.g., when the user logs in or out)
+   window.addEventListener('storage', checkAuthentication);
 
   return (
     <aside
@@ -83,7 +91,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Dashboard --> */}
 
               {/* <!-- Menu Item Admin Panel --> */}
-              {isAdminPanelVisible && (
+              {isAuthenticated  && (
                 <li>
                   <NavLink
                     to="/AdminPanel"

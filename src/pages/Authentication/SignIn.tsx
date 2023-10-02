@@ -1,13 +1,15 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link , useNavigate } from 'react-router-dom';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
+import { toast } from 'react-toastify';
 interface FormData {
   email: string;
   password: string;
 }
 const SignIn = () => {
+  const navigate= useNavigate()
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
@@ -38,7 +40,13 @@ const SignIn = () => {
       // Set the token in local storage
       console.log('response.data.token', response.data.token);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.userWithoutPassword));
+      window.dispatchEvent(new Event("storage"));
       resetForm();
+      toast.success(`Login successful`, {
+        theme: 'colored'
+      });
+      navigate('/AdminPanel')
 
       // Redirect to login or handle success as needed
     } catch (error) {

@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link , useNavigate} from 'react-router-dom';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
+import { toast } from 'react-toastify';
+
 interface FormData {
   email: string;
   password: string;
@@ -10,6 +12,7 @@ interface FormData {
   lastName: string;
 }
 const SignUp = () => {
+  const navigate= useNavigate()
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
@@ -39,6 +42,10 @@ const SignUp = () => {
       const response = await axios.post('http://localhost:3000/auth/register', formData);
       console.log('Registration successful:', response.data);
       resetForm();
+      toast.success(`Registration successful`, {
+        theme: 'colored'
+      });
+      navigate('/signin')
       // Redirect to login or handle success as needed
     } catch (error) {
       console.error('Registration failed:', error);
