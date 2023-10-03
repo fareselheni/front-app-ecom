@@ -9,8 +9,7 @@ const coreRoutes = [
   {
     path: '/signup',
     title: 'Signup',
-    component: Signup,
-  },
+    component: Signup  },
   {
     path: '/signin',
     title: 'Signin',

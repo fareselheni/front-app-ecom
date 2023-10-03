@@ -13,59 +13,74 @@ export const token = localStorage.getItem('token');
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
 function App() {
-  const [loading, setLoading] = useState<boolean>(true);
+  // Initialize a state variable to track whether the user is authenticated
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem('token'),
+  );
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 5000);
+  }, []);
+
+  // Helper function to update the isAuthenticated state
+  const checkAuthentication = () => {
+    setIsAuthenticated(!!localStorage.getItem('token'));
+  };
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
-  }, []);
+    // Check for authentication status when the component mounts
+    checkAuthentication();
+  }, [isAuthenticated]);
 
-  return loading ? (
-    <Loader />
-  ) : (
-    <>
-         {' '}
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-        containerClassName="overflow-auto"
-      />
-             {' '}
-      <Routes>
-               {' '}
-        <Route element={<DefaultLayout />}>
-                    <Route index element={<ProductList />} />         {' '}
-          {routes.map(({ path, component: Component, isAuthentificate }) => (
-            <Route
-              path={path}
-              element={
-                <Suspense fallback={<Loader />}>
-                                   {' '}
-                  {isAuthentificate === true ? (
-                    token ? (
-                      <Component />
-                    ) : (
-                      <SignIn />
-                    )
-                  ) : (
-                    <Component />
-                  )}
-                                                 {' '}
-                </Suspense>
-              }
-            />
-          ))}
-                 {' '}
-        </Route>
-             {' '}
-      </Routes>
-      <ToastContainer
-        closeButton={CloseButton}
-        icon={false}
-        position={toast.POSITION.TOP_RIGHT}
-      />
-         {' '}
-    </>
-  );
+  // Listen for changes to localStorage (e.g., when the user logs in or out)
+  window.addEventListener('storage', checkAuthentication);
+
+  return loading ? (
+    <Loader />
+  ) : (
+    <>
+      {' '}
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        containerClassName="overflow-auto"
+      />{' '}
+      <Routes>
+        {' '}
+        <Route element={<DefaultLayout />}>
+          <Route index element={<ProductList />} />{' '}
+          {routes.map(({ path, component: Component, isAuthentificate }) => (
+            <Route
+              path={path}
+              element={
+                <Suspense fallback={<Loader />}>
+                  {' '}
+                  {isAuthentificate === true ? (
+                    isAuthenticated ? (
+                      <Component />
+                    ) : (
+                      <SignIn />
+                    )
+                  ) : (
+                    <Component />
+                  )}{' '}
+                </Suspense>
+              }
+            />
+          ))}
+          {' '}
+        </Route>
+        {' '}
+      </Routes>
+      <ToastContainer
+        closeButton={CloseButton}
+        icon={false}
+        position={toast.POSITION.TOP_RIGHT}
+      />
+         {' '}
+    </>
+  );
 }
 
 export default App;

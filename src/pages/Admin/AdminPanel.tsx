@@ -10,7 +10,7 @@ const AdminPanel = () => {
     setShow(!show);
   };
   const getProductList = async () => {
-    await fetch('http://localhost:3000/product/products')
+    await fetch(`${import.meta.env.VITE_APP_SERVER_BASE_URL}/product/products`)
       .then((response) => response.json())
       .then((data) => setProducts(data.products));
   };

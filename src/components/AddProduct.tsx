@@ -1,22 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Select from './Select';
+import { AddProductProps } from '../types/product/index';
 import { toast } from 'react-toastify';
 
-// Define the Product interface
-interface Product {
-  _id: string;
-  title: string;
-  category: string;
-}
-interface AddProductProps {
-  updateProductList: any;
-  products: Product[];
-}
 const AddProduct = ({ updateProductList, products }: AddProductProps) => {
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState(products.length>0?products[0]._id:'');
+  const [selectedProduct, setSelectedProduct] = useState('');
   const [price, setPrice] = useState<number | undefined>(undefined);
 
   const [formData, setFormData] = useState({
@@ -60,7 +51,7 @@ const AddProduct = ({ updateProductList, products }: AddProductProps) => {
     try {
       // Make a POST request to your server endpoint
       const response = await axios.post(
-        'http://localhost:3000/product/add',
+        `${import.meta.env.VITE_APP_SERVER_BASE_URL}/product/add`,
         formDataToSend,
       );
 
@@ -98,7 +89,7 @@ const AddProduct = ({ updateProductList, products }: AddProductProps) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/product/addPricing', {
+      const response = await axios.post(`${import.meta.env.VITE_APP_SERVER_BASE_URL}/product/addPricing`, {
         productId: selectedProduct,
         country: selectedCountry,
         price: price,
@@ -122,7 +113,7 @@ const AddProduct = ({ updateProductList, products }: AddProductProps) => {
     }
   };
   const getCountries = async () => {
-    await fetch('http://localhost:3000/product/countries')
+    await fetch(`${import.meta.env.VITE_APP_SERVER_BASE_URL}/product/countries`)
       .then((response) => response.json())
       .then((data) => setCountries(data.products));
   };
@@ -323,9 +314,9 @@ const AddProduct = ({ updateProductList, products }: AddProductProps) => {
                         <input
                           type="number"
                           name='price'
-                          placeholder="price"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                           onChange={(e) => setPrice(parseFloat(e.target.value))}
+                          value={price}
                         />
                       </div>
                     </div>

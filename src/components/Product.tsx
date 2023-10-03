@@ -14,21 +14,20 @@ const Product = ({ country, product }: ProductProps) => {
   const [productPrice, setProductPrice] = useState();
   const getProductPrice = async () => {
     await fetch(
-      `http://localhost:3000/product/price?productId=${product._id}&country=${country}`,
+      `${import.meta.env.VITE_APP_SERVER_BASE_URL}/product/price?productId=${product._id}&country=${country}`,
     )
       .then((response) => response.json())
       .then((data) => setProductPrice(data.price));
   };
   useEffect(() => {
     getProductPrice();
-    console.log('product==>', product._id);
   }, []);
   return (
     <>
       <div className="group relative">
         <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
           <img
-            src={`http://localhost:3000/images/${product.image}`}
+            src={`${import.meta.env.VITE_APP_SERVER_BASE_URL}/images/${product.image}`}
             alt="Front of men&#039;s Basic Tee in black."
             className="h-full w-full object-cover object-center lg:h-full lg:w-full"
           ></img>

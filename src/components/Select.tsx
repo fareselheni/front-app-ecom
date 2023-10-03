@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 
 interface SelectProps<T> {
   label: string;
@@ -31,23 +31,25 @@ const Select = <T,>({ label, options, optionLabel, optionValue, onChange, value 
             isDropdownOpen ? 'block' : 'hidden'
           } absolute top-full left-0 w-full max-h-40 overflow-y-auto rounded-b-md border-t border-l border-r border-stroke bg-white dark:bg-form-input`}
         >
-          <ul className="py-2">
-            {options.slice(0, 2).map((option: any) => (
-              <li
-                key={option[optionValue]}
-                className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => handleOptionSelect(option[optionValue])}
-              >
-                {option[optionLabel]}
-              </li>
-            ))}
-          </ul>
+               <select
+          className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
+          value={value}
+          onChange={(e) => handleOptionSelect(e.target.value)}
+        >
+           <option key={0} value={""} />
+          {options.map((option: any) => (
+            <option key={option[optionValue]} value={option[optionValue]}>
+              {option[optionLabel]}
+            </option>
+          ))}
+        </select>
         </div>
         <select
           className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
           value={value}
           onChange={(e) => onChange(e.target.value)}
         >
+           <option key={0} value={""} />
           {options.map((option: any) => (
             <option key={option[optionValue]} value={option[optionValue]}>
               {option[optionLabel]}

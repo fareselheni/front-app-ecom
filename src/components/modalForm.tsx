@@ -53,7 +53,7 @@ const ModalForm = ({ isVisible, onClose, product,updateProductList }: ModalFormP
     try {
       // Make a POST request to your server endpoint
       const response = await axios.put(
-        `http://localhost:3000/product/update/${product._id}`,
+        `${import.meta.env.VITE_APP_SERVER_BASE_URL}/product/update/${product._id}`,
         formDataToSend,
       );
 

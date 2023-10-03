@@ -6,13 +6,13 @@ const ProductList = () => {
 
   const getUserGeolocationDetails = async () => {
     await fetch(
-      'https://geolocation-db.com/json/0f761a30-fe14-11e9-b59f-e53803842572',
+      `${import.meta.env.VITE_GEO_LOCATION}`,
     )
       .then((response) => response.json())
       .then((data) => setCountry(data.country_code));
   };
   const getProductList = async () => {
-    await fetch('http://localhost:3000/product/products')
+    await fetch(`${import.meta.env.VITE_APP_SERVER_BASE_URL}/product/products`)
       .then((response) => response.json())
       .then((data) => setProducts(data.products));
   };

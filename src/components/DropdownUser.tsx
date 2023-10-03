@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { token } from '../App';
 
 import UserOne from '../images/user/user-01.png';
 const storedUserData: any = localStorage.getItem('user');
-const user = JSON.parse(storedUserData);
+const user =  storedUserData ? JSON.parse(storedUserData):"";
 
 const DropdownUser = () => {
   const navigate = useNavigate();

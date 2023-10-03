@@ -35,7 +35,7 @@ const TableTwo = ({ productList,updateProductList  }: TableTwoProps) => {
     for (const product of productList) {
       try {
         const response = await fetch(
-          `http://localhost:3000/product/price?productId=${product._id}&country=${country}`,
+          `${import.meta.env.VITE_APP_SERVER_BASE_URL}/product/price?productId=${product._id}&country=${country}`,
         );
 
         if (response.ok) {
@@ -53,7 +53,7 @@ const TableTwo = ({ productList,updateProductList  }: TableTwoProps) => {
   };
   const handleDeleteProduct = async (productId: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/product/delete/${productId}`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_SERVER_BASE_URL}/product/delete/${productId}`, {
         method: 'DELETE',
       });
   
@@ -108,9 +108,9 @@ const TableTwo = ({ productList,updateProductList  }: TableTwoProps) => {
         >
           <div className="col-span-2 flex items-center">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <div className="h-12.5 w-15 rounded-md">
+              <div className="h-15.5 w-15 rounded-md">
                 <img
-                  src={`http://localhost:3000/images/${product.image}`}
+                  src={`${import.meta.env.VITE_APP_SERVER_BASE_URL}/images/${product.image}`}
                   alt="Product"
                 />
               </div>

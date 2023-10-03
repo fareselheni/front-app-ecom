@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { Link , useNavigate} from 'react-router-dom';
-import LogoDark from '../../images/logo/logo-dark.svg';
-import Logo from '../../images/logo/logo.svg';
 import { toast } from 'react-toastify';
 
 interface FormData {
@@ -39,8 +37,7 @@ const SignUp = () => {
     e.preventDefault();
     
     try {
-      const response = await axios.post('http://localhost:3000/auth/register', formData);
-      console.log('Registration successful:', response.data);
+      await axios.post(`${import.meta.env.VITE_APP_SERVER_BASE_URL}/auth/register`, formData);
       resetForm();
       toast.success(`Registration successful`, {
         theme: 'colored'
@@ -57,14 +54,7 @@ const SignUp = () => {
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="py-17.5 px-26 text-center">
-              <Link className="mb-5.5 inline-block" to="/">
-                <img className="hidden dark:block" src={Logo} alt="Logo" />
-                <img className="dark:hidden" src={LogoDark} alt="Logo" />
-              </Link>
-              <p className="2xl:px-20">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                suspendisse.
-              </p>
+            
 
               <span className="mt-15 inline-block">
                 <svg
@@ -193,7 +183,6 @@ const SignUp = () => {
 
           <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-              <span className="mb-1.5 block font-medium">Start for free</span>
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
                 Sign Up 
               </h2>

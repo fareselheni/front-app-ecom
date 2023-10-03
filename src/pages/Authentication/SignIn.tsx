@@ -1,25 +1,44 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { Link , useNavigate } from 'react-router-dom';
-import LogoDark from '../../images/logo/logo-dark.svg';
-import Logo from '../../images/logo/logo.svg';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 interface FormData {
   email: string;
   password: string;
 }
 const SignIn = () => {
-  const navigate= useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
+    email: '',
+    password: '',
+  });
+  const [errors, setErrors] = useState({
     email: '',
     password: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    if (name === 'email') {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      const isValid = emailRegex.test(value);
+      setErrors({
+        ...errors,
+        email: isValid ? '' : 'Invalid email format',
+      });
+    }
+    if (name === 'password') {
+      const regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      const isValid = regex.test(value);
+      setErrors({
+        ...errors,
+        password: isValid ? '' : 'Password must be at least 8 characters and include 1 uppercase letter, 1 lowercase letter, 1 special character, and 1 number.',
+      });
+    }
   };
   const resetForm = () => {
     setFormData({
@@ -30,24 +49,30 @@ const SignIn = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    // Additional validation checks (if needed)
+    if (!formData.email || !formData.password) {
+      setErrors({
+        email: !formData.email ? 'Email is required' : '',
+        password: !formData.password ? 'Password is required' : '',
+      });
+      return;
+    }
     try {
       const response = await axios.post(
-        'http://localhost:3000/auth/login',
+        `${import.meta.env.VITE_APP_SERVER_BASE_URL}/auth/login`,
         formData,
       );
-      console.log('Login successful:', response.data);
-      // Set the token in local storage
-      console.log('response.data.token', response.data.token);
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.userWithoutPassword));
-      window.dispatchEvent(new Event("storage"));
+      localStorage.setItem(
+        'user',
+        JSON.stringify(response.data.userWithoutPassword),
+      );
+      window.dispatchEvent(new Event('storage'));
       resetForm();
       toast.success(`Login successful`, {
-        theme: 'colored'
+        theme: 'colored',
       });
-      navigate('/AdminPanel')
-
+      navigate('/ProductList');
       // Redirect to login or handle success as needed
     } catch (error) {
       console.error('Login failed:', error);
@@ -56,19 +81,9 @@ const SignIn = () => {
   return (
     <>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="flex flex-wrap items-center">
+        <div className="flex flex-wrap items-center ">
           <div className="hidden w-full xl:block xl:w-1/2">
-            <div className="py-17.5 px-26 text-center">
-              <Link className="mb-5.5 inline-block" to="/">
-                <img className="hidden dark:block" src={Logo} alt="Logo" />
-                <img className="dark:hidden" src={LogoDark} alt="Logo" />
-              </Link>
-
-              <p className="2xl:px-20">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                suspendisse.
-              </p>
-
+            <div className="py-35 px-26 text-center">
               <span className="mt-15 inline-block">
                 <svg
                   width="350"
@@ -196,7 +211,6 @@ const SignIn = () => {
 
           <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-              <span className="mb-1.5 block font-medium">Start for free</span>
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
                 Sign In
               </h2>
@@ -210,14 +224,17 @@ const SignIn = () => {
                     <input
                       type="email"
                       placeholder="Enter your email"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      className={`w-full rounded-lg py-4 pl-6 pr-10   border ${
+                        errors.email ? 'border-danger' : 'border-stroke bg-transparent  outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
+                      }`}
                       name="email"
                       id="email"
                       value={formData.email}
                       onChange={handleChange}
-                      required
                     />
-
+                    {errors.email && (
+                      <p className="text-danger text-sm" >{errors.email}</p>
+                    )}
                     <span className="absolute right-4 top-4">
                       <svg
                         className="fill-current"
@@ -246,13 +263,18 @@ const SignIn = () => {
                     <input
                       type="password"
                       placeholder="Enter your password"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      className={`w-full rounded-lg py-4 pl-6 pr-10   border ${
+                        errors.password ? 'border-danger' : 'border-stroke bg-transparent  outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
+                      }`}                    
                       onChange={handleChange}
                       name="password"
                       id="password"
                       value={formData.password}
-                      required
+                    
                     />
+                     {errors.password && (
+                      <p className="text-danger text-sm">{errors.password}</p>
+                    )}
 
                     <span className="absolute right-4 top-4">
                       <svg
